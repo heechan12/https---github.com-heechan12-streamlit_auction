@@ -1,0 +1,15 @@
+cookie:
+  expiry_days: 7
+  key: some_signature_key
+  name: some_cookie_name
+credentials:
+  usernames:
+    heechan:
+      name: "\uC591\uD76C\uCC2C"
+      password: $2b$12$GoM9V.fgRIyJMX0owVEPLuqLFyvDVDe3qNHUbibYpMnAck9uhUBtG
+    yeji:
+      name: "\uAE40\uC608\uC9C0"
+      password: $2b$12$Tgqck1sbbgqIzTxjdgK3ZOBLicH6ZDbAt6XRNEXA.sg1DsyGKwmmO
+preauthorized:
+  emails:
+  - test@example.com
