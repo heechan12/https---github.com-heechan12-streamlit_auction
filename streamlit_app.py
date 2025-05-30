@@ -5,7 +5,7 @@ from pathlib import Path
 from login_page import login_page
 from main_page import main_page
 
-st.set_page_config(page_title="Auction App")
+st.set_page_config(page_title="🏘️ 부동산 경매 계산기")
 
 # ✅ 인증자 전역 객체를 세션에 저장
 if "authenticator" not in st.session_state:
@@ -25,7 +25,7 @@ authenticator = st.session_state["authenticator"]
 
 # ✅ 사이드바
 with st.sidebar:
-    st.title("Auction App")
+    st.title("경매 계산기 💰")
     if st.session_state.get("authentication_status"):
         st.markdown(f"👤 {st.session_state.get('name')}님")
 
@@ -36,6 +36,8 @@ with st.sidebar:
             st.session_state.clear()
             # ✅ 강제 리로드
             st.rerun()
+    else :
+        st.warning("로그인이 필요합니다")
 
 # ✅ 페이지 분기
 if st.session_state.get("authentication_status"):
