@@ -1,4 +1,4 @@
-#!/Users/yangheechan/Documents/PythonProject/AuctionCalculator/.venv/bin/python
+#!/Users/yangheechan/PycharmProjects/https---github.com-heechan12-streamlit_auction/.venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

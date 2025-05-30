@@ -2,47 +2,64 @@ import streamlit as st
 import yaml
 import streamlit_authenticator as stauth
 from pathlib import Path
-from login_page import login_page
-from main_page import main_page
+
+# 페이지별 모듈 import
+from pg_list.login_page import login_page
+from pg_list.main_page import main_page
+from pg_list.tax_calulator_information import tax_calculator_information
 
 st.set_page_config(page_title="🏘️ 부동산 경매 계산기")
 
-# ✅ 인증자 전역 객체를 세션에 저장
+# ✅ 인증 객체 초기화
 if "authenticator" not in st.session_state:
     config_path = Path(__file__).resolve().parent / "config.yaml"
     with open(config_path) as file:
         config = yaml.load(file, Loader=stauth.SafeLoader)
 
     st.session_state["authenticator"] = stauth.Authenticate(
-        config['credentials'],
-        config['cookie']['name'],
-        config['cookie']['key'],
-        config['cookie']['expiry_days'],
-        config['preauthorized']
+        config["credentials"],
+        config["cookie"]["name"],
+        config["cookie"]["key"],
+        config["cookie"]["expiry_days"],
+        config["preauthorized"]
     )
 
 authenticator = st.session_state["authenticator"]
 
+# ✅ 페이지 상태 초기화
+if "current_page" not in st.session_state:
+    st.session_state["current_page"] = "main"
+
 # ✅ 사이드바
 with st.sidebar:
     st.title("경매 계산기 💰")
+
     if st.session_state.get("authentication_status"):
         st.markdown(f"👤 {st.session_state.get('name')}님")
 
-        # TODO : 세금 계산 공식, 기준연도 등 페이지 생성 및 버튼으로 연동
+        # 페이지 전환 버튼
+        if st.button("🏠 메인 페이지"):
+            st.session_state["current_page"] = "main"
 
+        if st.button("📊 세금 계산 정보"):
+            st.session_state["current_page"] = "tax"
+
+        # 로그아웃
         if st.button("👋 로그아웃", key="logout-btn"):
-            # ✅ 쿠키 무효화
             authenticator.logout("hidden", "sidebar", key="logout-internal")
-            # ✅ 세션 상태 완전 초기화
             st.session_state.clear()
-            # ✅ 강제 리로드
             st.rerun()
-    else :
+    else:
         st.warning("로그인이 필요합니다")
 
-# ✅ 페이지 분기
+# ✅ 페이지 라우팅
 if st.session_state.get("authentication_status"):
-    main_page()
+    current = st.session_state["current_page"]
+    if current == "main":
+        main_page()
+    elif current == "tax":
+        tax_calculator_information()
+    else:
+        st.error("존재하지 않는 페이지입니다.")
 else:
     login_page(authenticator)
