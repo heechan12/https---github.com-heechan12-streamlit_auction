@@ -16,10 +16,10 @@ user_agent = st_javascript("navigator.userAgent")
 if user_agent:
     if "Mobile" in user_agent:
         st.session_state["user_agent"] = "Mobile"
-        st.toast("Mobile")
+        # st.toast("Mobile")
     else :
         st.session_state["user_agent"] = "Desktop"
-        st.toast("Desktop")
+        # st.toast("Desktop")
 
 # ✅ 인증 객체 초기화
 if "authenticator" not in st.session_state:
