@@ -1,6 +1,7 @@
 import streamlit as st
 import yaml
 import streamlit_authenticator as stauth
+from streamlit_javascript import st_javascript
 from pathlib import Path
 
 # 페이지별 모듈 import
@@ -8,7 +9,17 @@ from pg_list.login_page import login_page
 from pg_list.main_page import main_page
 from pg_list.tax_calulator_information import tax_calculator_information
 
-st.set_page_config(page_title="🏘️ 부동산 경매 계산기")
+st.set_page_config(page_title="🏘️ 부동산 경매 계산기", layout="wide")
+
+# TODO : 모바일 접속인지 노트북 접속인지 구분 후 session_state 로 관리
+user_agent = st_javascript("navigator.userAgent")
+if user_agent:
+    if "Mobile" in user_agent:
+        st.session_state["user_agent"] = "Mobile"
+        st.toast("Mobile")
+    else :
+        st.session_state["user_agent"] = "Desktop"
+        st.toast("Desktop")
 
 # ✅ 인증 객체 초기화
 if "authenticator" not in st.session_state:
