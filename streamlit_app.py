@@ -29,6 +29,8 @@ with st.sidebar:
     if st.session_state.get("authentication_status"):
         st.markdown(f"👤 {st.session_state.get('name')}님")
 
+        # TODO : 세금 계산 공식, 기준연도 등 페이지 생성 및 버튼으로 연동
+
         if st.button("👋 로그아웃", key="logout-btn"):
             # ✅ 쿠키 무효화
             authenticator.logout("hidden", "sidebar", key="logout-internal")
