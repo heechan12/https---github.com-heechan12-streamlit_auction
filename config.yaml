@@ -4,12 +4,12 @@ cookie:
   name: some_cookie_name
 credentials:
   usernames:
-    heechan:
+    heechan12:
       name: "\uC591\uD76C\uCC2C"
-      password: $2b$12$GoM9V.fgRIyJMX0owVEPLuqLFyvDVDe3qNHUbibYpMnAck9uhUBtG
-    yeji:
+      password: $2b$12$ozQWNSx3HOvgRJKup2IDxO7kC6SByrYL5mmrXQmGPy29j3OvGPSXK
+    yediz:
       name: "\uAE40\uC608\uC9C0"
-      password: $2b$12$Tgqck1sbbgqIzTxjdgK3ZOBLicH6ZDbAt6XRNEXA.sg1DsyGKwmmO
+      password: $2b$12$qzLwGb0GlhjR0XXo8i8EKOcnTQcTI5RufQj8K5TlayFzCo83ieIaW
 preauthorized:
   emails:
   - test@example.com
