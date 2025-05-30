@@ -1,11 +1,44 @@
 import streamlit as st
+import yaml
+import streamlit_authenticator as stauth
+from pathlib import Path
+from login_page import login_page
+from main_page import main_page
 
-st.set_page_config(page_title="홈", layout="centered")
+st.set_page_config(page_title="Auction App")
 
-st.title("🏠 Streamlit App")
+# ✅ 인증자 전역 객체를 세션에 저장
+if "authenticator" not in st.session_state:
+    config_path = Path(__file__).resolve().parent / "config.yaml"
+    with open(config_path) as file:
+        config = yaml.load(file, Loader=stauth.SafeLoader)
 
+    st.session_state["authenticator"] = stauth.Authenticate(
+        config['credentials'],
+        config['cookie']['name'],
+        config['cookie']['key'],
+        config['cookie']['expiry_days'],
+        config['preauthorized']
+    )
+
+authenticator = st.session_state["authenticator"]
+
+# ✅ 사이드바
+with st.sidebar:
+    st.title("Auction App")
+    if st.session_state.get("authentication_status"):
+        st.markdown(f"👤 {st.session_state.get('name')}님")
+
+        if st.button("👋 로그아웃", key="logout-btn"):
+            # ✅ 쿠키 무효화
+            authenticator.logout("hidden", "sidebar", key="logout-internal")
+            # ✅ 세션 상태 완전 초기화
+            st.session_state.clear()
+            # ✅ 강제 리로드
+            st.rerun()
+
+# ✅ 페이지 분기
 if st.session_state.get("authentication_status"):
-    st.success(f"{st.session_state.get('name')}님, 환영합니다!")
-    st.markdown("➡️ 왼쪽 사이드바에서 '메인 페이지'로 이동해 보세요.")
+    main_page()
 else:
-    st.markdown("➡️ 왼쪽 사이드바에서 **로그인 페이지**로 이동해 주세요.")
+    login_page(authenticator)
