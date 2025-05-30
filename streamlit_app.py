@@ -1,35 +1,44 @@
 import streamlit as st
+import yaml
+import streamlit_authenticator as stauth
+from pathlib import Path
 from login_page import login_page
 from main_page import main_page
 
 st.set_page_config(page_title="Auction App")
 
-# 초기 상태 설정
-if "authentication_status" not in st.session_state:
-    st.session_state["authentication_status"] = False
-if "page" not in st.session_state:
-    st.session_state["page"] = "login"
+# ✅ 인증자 전역 객체를 세션에 저장
+if "authenticator" not in st.session_state:
+    config_path = Path(__file__).resolve().parent / "config.yaml"
+    with open(config_path) as file:
+        config = yaml.load(file, Loader=stauth.SafeLoader)
 
-# 페이지 선택
-page = st.session_state.get("page")
+    st.session_state["authenticator"] = stauth.Authenticate(
+        config['credentials'],
+        config['cookie']['name'],
+        config['cookie']['key'],
+        config['cookie']['expiry_days'],
+        config['preauthorized']
+    )
 
-# 사이드바
+authenticator = st.session_state["authenticator"]
+
+# ✅ 사이드바
 with st.sidebar:
     st.title("Auction App")
-    if st.session_state.authentication_status:
-        st.markdown(f"👤 {st.session_state.get('name')}님 환영합니다!")
+    if st.session_state.get("authentication_status"):
+        st.markdown(f"👤 {st.session_state.get('name')}님")
 
-        # 로그아웃 버튼
-        if st.button("로그아웃", key="logout-btn"):
-            # 전체 세션 초기화
+        if st.button("👋 로그아웃", key="logout-btn"):
+            # ✅ 쿠키 무효화
+            authenticator.logout("hidden", "sidebar", key="logout-internal")
+            # ✅ 세션 상태 완전 초기화
             st.session_state.clear()
-
-            # 강제로 리디렉션 유도 (query param 제거)
-            st.experimental_set_query_params()
+            # ✅ 강제 리로드
             st.rerun()
 
-# 라우팅
-if page == "login":
-    login_page()
-elif page == "main":
+# ✅ 페이지 분기
+if st.session_state.get("authentication_status"):
     main_page()
+else:
+    login_page(authenticator)
