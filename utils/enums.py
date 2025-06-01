@@ -1,13 +1,18 @@
 from enum import Enum
 
+
 class UserType(Enum):
     BUSINESS_GENERAL = "부동산 매매 사업자(일반)"
     BUSINESS_DUTY_FREE = "부동산 매매 사업자(면세)"
     NORMAL = "일반 매매"
 
+
 class EstateLocation(Enum):
-    NON_REGULATED = "비조정 지역"
-    REGULATED = "조정 지역"
+    NON_REGULATED_ZONE = "비조정대상지역"
+    REGULATED_ZONE = "조정대상지역"
+    HIGH_SPECULATION_AREA = "투기과열지구"
+    SPECULATION_ZONE = "투기지역"
+
 
 class RetentionPeriod(Enum):
     UNDER_1_YEAR = "1년 미만"
