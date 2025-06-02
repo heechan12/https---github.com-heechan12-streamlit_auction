@@ -1,5 +1,6 @@
 import streamlit as st
 from utils.enums import UserType, EstateLocation, RetentionPeriod
+from utils.utils import format_comma_price, format_real_price, format_korean_won
 
 def main_page():
     if not st.session_state.get("authentication_status"):
@@ -16,6 +17,7 @@ def main_page():
     # real_estate_info_col : 부동산 정보 세팅 (지역, 가격 등)
     user_info_col, real_estate_info_col = st.columns(2)
 
+    # TODO : 함수로 정리하기
     with user_info_col:
         with st.container(border=True):
             user_type_label = st.selectbox(
@@ -30,9 +32,18 @@ def main_page():
                 (ut for ut in UserType if ut.value == user_type_label), None
             )
 
+            # 현재 보유 부동산 수
+            num_properties = st.number_input(
+                "현재 부동산 보유 수",
+                value=0,
+                format="%d",
+                placeholder="현재 부동산 보유 개수를 입력해주세요"
+            )
 
+    # TODO : 함수로 정리하기
     with real_estate_info_col:
         with st.container(border=True):
+            # 부동산위 위치한 지역 확인
             estate_location_label = st.selectbox(
                 "부동산이 위치한 지역",
                 [el.value for el in EstateLocation],
@@ -43,6 +54,16 @@ def main_page():
                 (el for el in EstateLocation if el.value == estate_location_label), None
             )
 
+            # 부동산 경매 입찰비 확인
+            auction_bids = st.number_input(
+                "경매 입찰가를 입력해주세요",
+                value=0.000,
+                placeholder="억 단위를 소수점으로 입력해주세요 (ex. 1.2 (1억 2천))",
+                format="%.3f"
+            )
+            auction_bids_won = format_comma_price(auction_bids)
+
+            # 부동산 예상 보유 기간 확인
             retention_period_label = st.selectbox(
                 "예상 보유 기간",
                 [rp.value for rp in RetentionPeriod],
@@ -55,6 +76,9 @@ def main_page():
 
     st.subheader("📋 선택한 값 확인")
     st.json(user_input)
+    st.write(f"현재 부동산 보유 개수 : {num_properties}개")
+    st.write(f"경매 입찰가 : {format_korean_won(auction_bids)}")
+
 
     # 테스트 목적
     # 이 부분을 함수로 구현하고 별도의 파일로 분리하기
