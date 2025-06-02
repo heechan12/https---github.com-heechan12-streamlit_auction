@@ -8,6 +8,10 @@ class UserType(Enum):
 
 
 class EstateLocation(Enum):
+    '''
+    지역 : Zone
+    지구 : AREA
+    '''
     NON_REGULATED_ZONE = "비조정대상지역"
     REGULATED_ZONE = "조정대상지역"
     HIGH_SPECULATION_AREA = "투기과열지구"
