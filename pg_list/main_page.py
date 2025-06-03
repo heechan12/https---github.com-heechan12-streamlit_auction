@@ -1,6 +1,7 @@
 import streamlit as st
 from utils.enums import UserType, EstateLocation, RetentionPeriod
 from utils.utils import format_comma_price, format_real_price, format_korean_won
+from utils.tax import get_total_acquistion_related_cost
 
 
 # 유저 정보 입력 함수
@@ -45,6 +46,7 @@ def get_real_estate_info():
             format="%.3f",
         )
         auction_bids_won = format_comma_price(auction_bids)
+        auction_real_price = format_real_price(auction_bids)
         retention_period_label = st.selectbox(
             "예상 보유 기간",
             [rp.value for rp in RetentionPeriod],
@@ -54,7 +56,20 @@ def get_real_estate_info():
         user_input["estimated_retention_period"] = next(
             (rp for rp in RetentionPeriod if rp.value == retention_period_label), None
         )
-    return user_input, auction_bids
+    return user_input, auction_real_price
+
+
+def get_additional_info(auction_bids: int):
+    user_input = {}
+    with st.container(border=True):
+        # 취득세 + 교육세 + 법무비
+        additional_extate_tax = get_total_acquistion_related_cost(auction_bids)
+        user_input["additional_extate_tax"] = additional_extate_tax
+
+        st.write(
+            f"취득세 + 교육세 + 법무비 : {format_korean_won(additional_extate_tax)}"
+        )
+    return user_input
 
 
 def main_page():
@@ -70,7 +85,7 @@ def main_page():
 
     # user_info_col : 유저 정보 세팅 (부동산 매매 사업자, 기존 연봉, 등등
     # real_estate_info_col : 부동산 정보 세팅 (지역, 가격 등)
-    user_info_col, real_estate_info_col = st.columns(2)
+    user_info_col, real_estate_info_col, additional_info_col = st.columns(3)
 
     with user_info_col:
         user_info, num_properties = get_user_info()
@@ -78,11 +93,15 @@ def main_page():
     with real_estate_info_col:
         real_estate_info, auction_bids = get_real_estate_info()
         user_input.update(real_estate_info)
+        # 현재 매물 가격
+    with additional_info_col:
+        additional_estate_tax = get_additional_info(auction_bids)
 
     st.subheader("📋 선택한 값 확인")
     st.json(user_input)
     st.write(f"현재 부동산 보유 개수 : {num_properties}개")
     st.write(f"경매 입찰가 : {format_korean_won(auction_bids)}")
+    st.write(f"취득세 + 교육세 + 법무비 : {format_korean_won(additional_estate_tax)}")
 
     # 테스트 목적
     # 이 부분을 함수로 구현하고 별도의 파일로 분리하기

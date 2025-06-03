@@ -17,3 +17,8 @@
 
 
 """
+
+
+# 취득세 + 교육세 + 법무비 = 낙찰가의 2%
+def get_total_acquistion_related_cost(auction_price: int) -> int:
+    return int(auction_price * 0.02)
