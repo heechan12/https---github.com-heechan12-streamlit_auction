@@ -6,6 +6,7 @@ from utils.tax import get_total_acquistion_related_cost
 
 # 유저 정보 입력 함수
 def get_user_info():
+    st.markdown("#### :blue-background[*사용자 정보*] ")
     user_input = {}
     with st.container(border=True):
         user_type_label = st.selectbox(
@@ -28,6 +29,7 @@ def get_user_info():
 
 # 부동산 정보 입력 함수
 def get_real_estate_info():
+    st.markdown("#### :blue-background[*경매 정보*] ")
     user_input = {}
     with st.container(border=True):
         estate_location_label = st.selectbox(
@@ -60,14 +62,42 @@ def get_real_estate_info():
 
 
 def get_additional_info(auction_bids: int):
+    st.markdown("#### :blue-background[*기타 부동산 정보*] ")
     user_input = {}
     with st.container(border=True):
         # 취득세 + 교육세 + 법무비
-        additional_extate_tax = get_total_acquistion_related_cost(auction_bids)
-        user_input["additional_extate_tax"] = additional_extate_tax
+        additional_estate_tax = get_total_acquistion_related_cost(auction_bids)
+        user_input["additional_estate_tax"] = additional_estate_tax
 
+        # 미납 관리비
+        #unpaid_maintenance_fee
+
+        # 명도비
+        # 59 기준 200, 84 기준 400
+        # 그래도 입력하도록 하기
+
+        # 인테리어 비용
+        # 안해도 200만원은 잡아두기 (최소값 : 200만원)
+
+        # 중개보수비
+        # 5천만원미만은 0.6%, 5천~2억은 0.5%, 2억~5억은 0.4%
+        if auction_bids < 50000000 :
+            commission_fee = auction_bids * 0.006
+        elif 50000000 <= auction_bids < 200000000:
+            commission_fee = auction_bids * 0.005
+        elif 20000000 <= auction_bids < 500000000:
+            commission_fee = auction_bids * 0.004
+        else :
+            st.toast("정의되지 않은 가격")
+            commission_fee = auction_bids * 0.003
+        user_input["commission_fee"] = commission_fee
+
+        # 출력부
         st.write(
-            f"취득세 + 교육세 + 법무비 : {format_korean_won(additional_extate_tax)}"
+            f"취득세 + 교육세 + 법무비 : {format_korean_won(additional_estate_tax)}"
+        )
+        st.write(
+            f"중개 수수료 : {format_korean_won(commission_fee)}"
         )
     return user_input
 
@@ -77,8 +107,8 @@ def main_page():
         st.warning("로그인이 필요합니다.")
         st.stop()
 
-    st.title("📄 Main Page")
-    st.write(f"{st.session_state.get('name')}님, 환영합니다!")
+    st.title("🧮 부동산 경매 차익 계산기")
+    # st.write(f"{st.session_state.get('name')} 님, 환영합니다!")
 
     # 사용자 입력 저장용 dictionary
     user_input = {}
@@ -101,7 +131,6 @@ def main_page():
     st.json(user_input)
     st.write(f"현재 부동산 보유 개수 : {num_properties}개")
     st.write(f"경매 입찰가 : {format_korean_won(auction_bids)}")
-    st.write(f"취득세 + 교육세 + 법무비 : {format_korean_won(additional_estate_tax)}")
 
     # 테스트 목적
     # 이 부분을 함수로 구현하고 별도의 파일로 분리하기

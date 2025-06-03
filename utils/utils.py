@@ -38,4 +38,4 @@ def format_korean_won(price: int) -> str:
             result += " "
         result += f"{cheon:,}만원"  # 천 단위 콤마 추가 가능
 
-    return result or "0원"
+    return result or "0 원"
