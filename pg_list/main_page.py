@@ -88,7 +88,7 @@ def get_additional_info(auction_bids: int):
             commission_fee = auction_bids * 0.004
         else:
             st.toast("⚠️ 정의되지 않은 가격 구간입니다. 기본 요율 0.3% 적용")
-            commission_fee = auction_bids * 0.003
+            commission_fee = int(auction_bids * 0.003)
         user_input["commission_fee"] = commission_fee
 
         # 출력
