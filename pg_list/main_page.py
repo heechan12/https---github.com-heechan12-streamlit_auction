@@ -72,7 +72,7 @@ def get_additional_info(auction_bids: int):
 
         # 인테리어 비용 (최소 200만원)
         interior_expense_input = st.number_input(
-            "인테리어 비용을 입력하세요 (단위: 만원)",
+            "인테리어 비용을 입력해주세요 (단위: 만원)",
             min_value=0,
             step=1,
             format="%d"
@@ -91,6 +91,23 @@ def get_additional_info(auction_bids: int):
             st.toast("⚠️ 정의되지 않은 가격 구간입니다. 기본 요율 0.3% 적용")
             commission_fee = int(auction_bids * 0.003)
         user_input["commission_fee"] = commission_fee
+
+        # 명도비
+        # TODO 아래 내용 정리하고 evacuation_fee 도 return 값에 추가하기
+        st.write("명도비를 입력해주세요")
+        col1, col2 = st.columns(2)
+        if "disabled" not in st.session_state:
+            st.session_state.disabled = False
+        with col1 :
+            st.checkbox("직접 입력", key="disabled")
+
+        with col2 :
+            evacuation_fee = st.selectbox(
+                "명도비를 선택해주세요",
+                ("200만원 (전용 59)", "400만원 (전용 84)"),
+                label_visibility="hidden",
+                disabled=st.session_state.disabled,
+            )
 
         # 출력
         st.write(f"🏷️ 취득세 + 교육세 + 법무비: {format_korean_won(additional_estate_tax)}")
