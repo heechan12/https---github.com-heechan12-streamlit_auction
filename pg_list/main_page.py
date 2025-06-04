@@ -47,6 +47,7 @@ def get_real_estate_info():
         )
         auction_bids_won = format_comma_price(auction_bids)
         auction_real_price = format_real_price(auction_bids)
+        user_input["auction_bids"] = auction_real_price
 
         retention_period_label = st.selectbox(
             "예상 보유 기간",
